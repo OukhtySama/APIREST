@@ -17,4 +17,11 @@ app.get("/outfit", (req, res) => {
         shoes: _.sample(shoes)
     });
 });
+
+app.post("/comment", (req, res) => {
+    const id = uuid();
+
+    console.log(id);
+    res.sendStatus(201);
+});
 app.listen(3000, () => console.log("API Server s running..."));
