@@ -20,10 +20,16 @@ app.get("/outfit", (req, res) => {
     });
 });
 
-app.post("/comment", (req, res) => {
+app.post("/comment",async (req, res) => {
     const id = uuid();
+    const content = req.body.content;
 
-    console.log(id);
+    if (!content) {
+        return res.sendStatus(400);
+    }
+
+    await fs.mkdir("data/comments", { recursive: true});
+
     res.sendStatus(201);
 });
 app.listen(3000, () => console.log("API Server s running..."));
