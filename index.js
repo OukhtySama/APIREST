@@ -19,8 +19,16 @@ app.get("/outfit", (req, res) => {
         shoes: _.sample(shoes)
     });
 });
-app.get("/comment/:id", (req, res) => {
-    const id = req.params.id
+
+app.get("/comment/:id", async (req, res) => {
+    const id = req.params.id;
+    let content;
+
+    try {
+        content = await fs.readFile(`data/coment/${id}.txt`, "utf-8");
+    } catch(err) {
+
+    }
 });
 
 app.post("/comment",async (req, res) => {
