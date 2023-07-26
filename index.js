@@ -8,45 +8,49 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/outfit", (req, res) => {
-    const tops = ["Black", "White", "Orange", "Navy"];
-    const jeans = ["Grey", "Dark Grey", "Black", "Navy"];
-    const shoes = ["White", "Grey", "Black", "Red"];
+
+app.get("/tenue", (req, res) => {
+    const hauts = ["Noir", "Blanc", "Orange", "Bleu marine"];
+    const jeans = ["Gris", "Gris foncé", "Noir", "Bleu marine"];
+    const chaussures = ["Blanc", "Gris", "Noir", "Rouge"];
 
     res.json({
-        top: _.sample(tops),
+        haut: _.sample(hauts),
         jeans: _.sample(jeans),
-        shoes: _.sample(shoes)
+        chaussures: _.sample(chaussures)
     });
 });
 
-app.get("/comments/:id", async (req, res) => {
-    const id = req.params.id;
-    let content;
-
-    try {
-        content = await fs.readFile(`data/comments/${id}.txt`, "utf-8");
-    } catch(err) {
-        return res.sendStatus(404);
-    }
-    res.json({
-        content: content
-    });
-});
-
-app.post("/comments",async (req, res) => {
+app.post("/commentaires", async (req, res) => {
     const id = uuid();
-    const content = req.body.content;
+    const contenu = req.body.contenu;
 
-    if (!content) {
-        return res.sendStatus(400);
+    if (!contenu || typeof contenu !== "string") {
+        return res.status(400).json({ erreur: "Le contenu du commentaire est invalide." });
     }
 
-    await fs.mkdir("data/comments", { recursive: true});
-    await fs.writeFile(`data/comments/${id}.txt`, content);
+    await fs.mkdir("data/commentaires", { recursive: true });
+    await fs.writeFile(`data/commentaires/${id}.txt`, contenu);
 
     res.status(201).json({
         id: id
     });
 });
-app.listen(3000, () => console.log("API Server s running..."));
+
+
+app.post("/commentaires",async (req, res) => {
+    const id = uuid();
+    const contenu = req.body.contenu;
+
+    if (!contenu) {
+        return res.sendStatus(400);
+    }
+
+    await fs.mkdir("data/commentaires", { recursive: true});
+    await fs.writeFile(`data/commentaires/${id}.txt`, contenu);
+
+    res.status(201).json({
+        id: id
+    });
+});
+app.listen(3000, () => console.log("Serveur API en cours d'exécution..."));
