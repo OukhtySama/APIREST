@@ -29,6 +29,9 @@ app.get("/comment/:id", async (req, res) => {
     } catch(err) {
 
     }
+    res.json({
+        content: content
+    })
 });
 
 app.post("/comment",async (req, res) => {
