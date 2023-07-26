@@ -1,4 +1,5 @@
 const commentaireModel = require("../models/commentaireModel");
+const MAX_COMMENTAIRES = 20; // Nombre maximum de commentaires autorisés dans le fichier data
 
 module.exports = {
   async ajouterCommentaire(req, res) {
@@ -9,6 +10,13 @@ module.exports = {
     }
 
     try {
+      // Vérifier le nombre de commentaires actuels dans le fichier
+      const commentaires = await commentaireModel.getAllCommentaires();
+      if (commentaires.length >= MAX_COMMENTAIRES) {
+        // Si le nombre de commentaires atteint la limite, renvoyer un message indiquant que la boite de commentaire est pleine
+        return res.status(403).json({ erreur: "Boite de commentaire pleine. Impossible d'ajouter de nouveaux commentaires." });
+      }
+
       const commentaire = await commentaireModel.ajouterCommentaire(contenu);
       res.status(201).json(commentaire);
     } catch (err) {
