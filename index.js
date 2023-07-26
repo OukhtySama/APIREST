@@ -20,21 +20,21 @@ app.get("/outfit", (req, res) => {
     });
 });
 
-app.get("/comment/:id", async (req, res) => {
+app.get("/comments/:id", async (req, res) => {
     const id = req.params.id;
     let content;
 
     try {
-        content = await fs.readFile(`data/comment/${id}.txt`, "utf-8");
+        content = await fs.readFile(`data/comments/${id}.txt`, "utf-8");
     } catch(err) {
 
     }
     res.json({
         content: content
-    })
+    });
 });
 
-app.post("/comment",async (req, res) => {
+app.post("/comments",async (req, res) => {
     const id = uuid();
     const content = req.body.content;
 
