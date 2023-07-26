@@ -25,7 +25,7 @@ app.get("/comment/:id", async (req, res) => {
     let content;
 
     try {
-        content = await fs.readFile(`data/coment/${id}.txt`, "utf-8");
+        content = await fs.readFile(`data/comment/${id}.txt`, "utf-8");
     } catch(err) {
 
     }
