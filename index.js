@@ -19,6 +19,9 @@ app.get("/outfit", (req, res) => {
         shoes: _.sample(shoes)
     });
 });
+app.get("/comment/:id", (req, res) => {
+    const id = req.params.id
+});
 
 app.post("/comment",async (req, res) => {
     const id = uuid();
