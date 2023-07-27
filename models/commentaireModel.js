@@ -1,7 +1,7 @@
-const fs = require("fs/promises");
+const db = require("../db");
 const { v4: uuid } = require("uuid");
 
-const MAX_COMMENTAIRES = 20; // Nombre maximum de commentaires autorisés dans le fichier data
+const MAX_COMMENTAIRES = 20;
 
 const commentaireModel = {
   async ajouterCommentaire(contenu) {
@@ -12,44 +12,55 @@ const commentaireModel = {
     }
 
     try {
-      // Vérifier le nombre de commentaires actuels dans le fichier
-      const commentaires = await this.getAllCommentaires();
-      if (commentaires.length >= MAX_COMMENTAIRES) {
-        throw new Error("Limite de commentaires atteinte. Impossible d'ajouter de nouveaux commentaires.");
-      }
+      // Obtenir une connexion à partir du pool
+      const connection = await db.getConnection();
 
-      await fs.mkdir("data/commentaires", { recursive: true });
-      await fs.writeFile(`data/commentaires/${id}.txt`, contenu);
+      // Effectuer la requête INSERT à l'aide de la connexion
+      await connection.query("INSERT INTO commentaires (id, contenu) VALUES (?, ?)", [id, contenu]);
+
+      // Libérer la connexion
+      connection.release();
 
       return { id, contenu };
     } catch (err) {
-      // Renvoyer l'erreur plutôt que de la lancer
-      return err;
+      throw new Error("Une erreur est survenue lors de l'ajout du commentaire : " + err.message);
     }
   },
 
   async getCommentaireById(id) {
     try {
-      const cheminFichier = `data/commentaires/${id}.txt`;
-      const contenu = await fs.readFile(cheminFichier, "utf-8");
-      return { id, contenu };
+      // Obtenir une connexion à partir du pool
+      const connection = await db.getConnection();
+
+      // Effectuer la requête SELECT à l'aide de la connexion
+      const [commentaires] = await connection.query("SELECT * FROM commentaires WHERE id = ?", [id]);
+
+      // Libérer la connexion
+      connection.release();
+
+      if (commentaires.length === 0) {
+        return null;
+      }
+      return { id: commentaires[0].id, contenu: commentaires[0].contenu };
     } catch (err) {
-      return null;
+      throw new Error("Une erreur est survenue lors de la récupération du commentaire : " + err.message);
     }
   },
 
   async getAllCommentaires() {
     try {
-      const commentaires = [];
-      const fichiers = await fs.readdir("data/commentaires");
-      for (const fichier of fichiers) {
-        const id = fichier.replace(".txt", "");
-        const contenu = await fs.readFile(`data/commentaires/${fichier}`, "utf-8");
-        commentaires.push({ id, contenu });
-      }
-      return commentaires;
+      // Obtenir une connexion à partir du pool
+      const connection = await db.getConnection();
+
+      // Effectuer la requête SELECT à l'aide de la connexion
+      const [commentaires] = await connection.query("SELECT * FROM commentaires");
+
+      // Libérer la connexion
+      connection.release();
+
+      return commentaires.map((commentaire) => ({ id: commentaire.id, contenu: commentaire.contenu }));
     } catch (err) {
-      return [];
+      throw new Error("Une erreur est survenue lors de la récupération des commentaires : " + err.message);
     }
   }
 };

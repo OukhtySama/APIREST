@@ -1,7 +1,8 @@
 const commentaireModel = require("../models/commentaireModel");
-const MAX_COMMENTAIRES = 20; // Nombre maximum de commentaires autorisés dans le fichier data
 
-module.exports = {
+const MAX_COMMENTAIRES = 20;
+
+const commentaireController = {
   async ajouterCommentaire(req, res) {
     const contenu = req.body.contenu;
 
@@ -10,17 +11,16 @@ module.exports = {
     }
 
     try {
-      // Vérifier le nombre de commentaires actuels dans le fichier
-      const commentaires = await commentaireModel.getAllCommentaires();
+      const commentaires = await commentaireModel.getAllCommentaires(); // Modifiez cette ligne
+
       if (commentaires.length >= MAX_COMMENTAIRES) {
-        // Si le nombre de commentaires atteint la limite, renvoyer un message indiquant que la boite de commentaire est pleine
-        return res.status(403).json({ erreur: "Boite de commentaire pleine. Impossible d'ajouter de nouveaux commentaires." });
+        return res.status(403).json({ erreur: "Limite de commentaires atteinte. Impossible d'ajouter de nouveaux commentaires." });
       }
 
       const commentaire = await commentaireModel.ajouterCommentaire(contenu);
       res.status(201).json(commentaire);
     } catch (err) {
-      res.status(500).json({ erreur: "Une erreur est survenue lors de l'ajout du commentaire." });
+      res.status(500).json({ erreur: "Une erreur est survenue lors de l'ajout du commentaire : " + err.message });
     }
   },
 
@@ -34,7 +34,9 @@ module.exports = {
       }
       res.json(commentaire);
     } catch (err) {
-      res.status(500).json({ erreur: "Une erreur est survenue lors de la récupération du commentaire." });
+      res.status(500).json({ erreur: "Une erreur est survenue lors de la récupération du commentaire : " + err.message });
     }
   }
 };
+
+module.exports = commentaireController;
