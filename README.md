@@ -20,4 +20,4 @@ POST /commentaires : Ajoute un nouveau commentaire avec le contenu fourni dans l
 GET /commentaires/:id : Récupère le commentaire avec l'identifiant unique spécifié.
 L'API utilise également un fichier data/commentaires pour stocker les commentaires.
 
-PS : Assurez-vous d'avoir Node.js et npm installés sur votre système avant d'utiliser cette API. Pour plus de détails sur les routes et leur fonctionnement, veuillez vous référer au code source et aux commentaires dans les fichiers commentaireController.js et tenueController.js.
+PS : Assurez-vous d'avoir Node.js et npm installés sur votre système avant d'utiliser cette API.

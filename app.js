@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const tenueController = require("./controllers/tenueController");
-// app.js
+
 const commentaireController = require("./controllers/commentaireController");
 
 // Route pour récupérer un commentaire par son ID

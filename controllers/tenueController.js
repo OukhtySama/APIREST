@@ -1,4 +1,4 @@
-// controllers/tenueController.js
+
 const _ = require('lodash');
 
 const tenueController = {
