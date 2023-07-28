@@ -1,11 +1,16 @@
 const express = require("express");
 const tenuController = require("../controllers/tenueController");
+const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
 // Route pour générer une tenue aléatoire
-router.get("/", tenuController.genererTenue);
+router.get("/", auth.authenticateToken, tenuController.genererTenue);
 
-// Autres routes pour la gestion des tenues (à définir selon les fonctionnalités)
+// Route pour ajouter une nouvelle tenue
+router.post("/", (req, res) => {
+  res.status(501).json({ erreur: "Non implémenté. Cette route n'a pas été définie pour l'ajout de tenues." });
+});
+
 
 module.exports = router;
